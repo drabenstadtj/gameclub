@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Game Club – Home</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1>Current Game</h1>
+    {% if game %}
+      <h2><a href="{{ game['url'] }}" target="_blank">{{ game['game_name'] }}</a></h2>
+      <p><strong>Picked by:</strong> {{ game['user'] }}</p>
+      <p><strong>Genres:</strong> {{ game['genres'] }}</p>
+      <p><strong>Release Date:</strong> {{ game['release_date'] }}</p>
+      <p><strong>Summary:</strong> {{ game['summary'] }}</p>
+    {% else %}
+      <p>No game picked yet!</p>
+    {% endif %}
+    <p><a href="/games">See all games →</a></p>
+  </div>
+</body>
+</html>

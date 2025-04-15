@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Game Club – All Games</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet">
+</head>
+<body>
+  <h1>All Suggested Games</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Game</th>
+        <th>By</th>
+        <th>Genres</th>
+        <th>Release</th>
+        <th>Summary</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for game in rows %}
+      <tr>
+        <td><a href="{{ game['url'] }}" target="_blank">{{ game['game_name'] }}</a></td>
+        <td>{{ game['user'] }}</td>
+        <td>{{ game['genres'] }}</td>
+        <td>{{ game['release_date'] }}</td>
+        <td>{{ game['summary'][:150] ~ ('...' if game['summary']|length > 150 else '') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p><a href="/">← Back to home</a></p>
+</body>
+</html>

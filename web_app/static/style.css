@@ -1,0 +1,56 @@
+/* Dark Theme Base */
+body {
+    font-family: 'Roboto', sans-serif;
+    padding: 2rem;
+    background: #121212;
+    color: #e0e0e0;
+  }
+  
+  a {
+    color: #64b5f6;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  .container {
+    background: #1e1e1e;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 800px;
+    margin: auto;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  }
+  
+  /* Headings with stylized font */
+  h1, h2, h3 {
+    font-family: 'Special Gothic Expanded One', sans-serif;
+    color: #ffffff;
+    margin-top: 0;
+  }
+  
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1e1e1e;
+    color: #e0e0e0;
+  }
+  th, td {
+    padding: 0.75rem;
+    border: 1px solid #333;
+  }
+  th {
+    background: #2c2c2c;
+  }
+  
+  /* Game Info Box */
+  .game-box {
+    border: 1px solid #333;
+    padding: 1rem;
+    border-radius: 4px;
+    background: #1a1a1a;
+    margin-bottom: 1rem;
+  }
+  
