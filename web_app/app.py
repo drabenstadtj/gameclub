@@ -8,12 +8,10 @@ app = Flask(__name__, template_folder="templates", static_folder="static")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "../db/gameclub.db")
 
-
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
-
 
 @app.route("/")
 def home():
@@ -26,14 +24,11 @@ def home():
     """).fetchone()
     conn.close()
 
-    if game and game["release_date"].isdigit():
-        formatted_date = datetime.utcfromtimestamp(int(game["release_date"])).strftime("%B %d, %Y")
+    if game and str(game["release_date"]).isdigit():
         game = dict(game)
-        game["release_date"] = formatted_date
+        game["release_date"] = datetime.utcfromtimestamp(int(game["release_date"])).strftime("%B %d, %Y")
 
     return render_template("home.html", game=game)
-
-
 
 @app.route("/games")
 def games():
@@ -48,9 +43,8 @@ def games():
     formatted_rows = []
     for row in rows:
         row = dict(row)
-        if row["release_date"] and row["release_date"].isdigit():
+        if row["release_date"] and str(row["release_date"]).isdigit():
             row["release_date"] = datetime.utcfromtimestamp(int(row["release_date"])).strftime("%B %d, %Y")
         formatted_rows.append(row)
 
     return render_template("games.html", rows=formatted_rows)
-

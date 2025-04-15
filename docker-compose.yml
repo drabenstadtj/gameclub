@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  gameclub-bot:
+    build: .
+    container_name: gameclub
+    ports:
+      - "5000:5000"  # Flask exposed for your website
+    volumes:
+      - ./db:/app/db  # Persist database
+    environment:
+      - DISCORD_TOKEN=your_discord_token_here
+      - CLIENT_ID=your_igdb_client_id
+      - CLIENT_SECRET=your_igdb_client_secret
+    restart: unless-stopped

@@ -38,6 +38,8 @@ DB_PATH = os.path.join(BASE_DIR, "../db/gameclub.db")
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
+bot.remove_command("help")
+
 
 # SQLite setup
 conn = sqlite3.connect(DB_PATH)
@@ -157,41 +159,56 @@ async def run_sale_check():
         await channel.send("🔍 No sales found for saved games today.")
 
 
-# # --- Commands ---
-# @bot.command(name="help")
-# async def help_command(ctx):
-#     embed = discord.Embed(
-#         title="Commands",
-#         color=discord.Color.blue()
-#     )
+# # --- Commands --- 
+@bot.command(name="help")
+async def help_command(ctx):
+    embed = discord.Embed(
+        title="Bot Help",
+        description="List of commands:",
+        color=discord.Color.teal()
+    )
 
-#     embed.add_field(
-#         name="!suggest <game name or IGDB URL>",
-#         value="Suggest a game for the club to play. Use the IGDB name or a full IGDB link.",
-#         inline=False
-#     )
+    embed.add_field(
+        name="🎮 Game Suggestions",
+        value=(
+            "`!suggest <game name or IGDB URL>` – Suggest a game for the club.\n"
+            "You'll get a preview to confirm or cancel before it's added."
+        ),
+        inline=False
+    )
 
-#     embed.add_field(
-#         name="!pick_next",
-#         value="(Owner only) Picks the next game, announces it, and updates the site.",
-#         inline=False
-#     )
+    embed.add_field(
+        name="🗃️ Viewing Suggestions",
+        value=(
+            "`!listgames` – View all currently suggested games.\n"
+            "`!listpastgames` – View games that have been picked in the past."
+        ),
+        inline=False
+    )
 
-#     embed.add_field(
-#         name="!listgames",
-#         value="See all currently suggested games in the queue.",
-#         inline=False
-#     )
+    embed.add_field(
+        name="🎲 Game Selection",
+        value=(
+            "`!pick_next` – (Owner only) Picks the next game from the queue using round-robin.\n"
+            "Automatically announces it and updates the site."
+        ),
+        inline=False
+    )
 
-#     embed.add_field(
-#         name="!sales",
-#         value="Manually trigger a search for deals on suggested games.",
-#         inline=False
-#     )
+    embed.add_field(
+        name="💸 Game Sales",
+        value=(
+            "`!sales` – Manually check for sales on currently suggested games.\n"
+            "This also runs daily at noon automatically."
+        ),
+        inline=False
+    )
 
-#     embed.set_footer(text="Have a suggestion for a new feature? Let the owner know!")
+    embed.set_footer(text="Made by Jack.")
 
-#     await ctx.send(embed=embed)
+    await ctx.send(embed=embed)
+
+
 class SuggestionView(ui.View):
     def __init__(self, author_id, timeout=5):
         super().__init__(timeout=timeout)

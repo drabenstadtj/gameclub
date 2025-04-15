@@ -5,8 +5,13 @@ import signal
 import sys
 
 def run_flask():
-    from web_app.app import app
-    app.run(debug=False, port=5000, use_reloader=False)
+    # Run the Flask app using Gunicorn in production mode
+    subprocess.run([
+        sys.executable, "-m", "gunicorn",
+        "-w", "4",
+        "-b", "0.0.0.0:5000",
+        "wsgi:app"
+    ])
 
 # Start Flask server in a thread
 flask_thread = threading.Thread(target=run_flask)
@@ -27,7 +32,5 @@ except KeyboardInterrupt:
     bot_process.send_signal(signal.SIGINT)
     bot_process.terminate()
     bot_process.wait()
-
-    # Flask will stop since it's a daemon thread
     print("[✓] Shutdown complete.")
     sys.exit(0)
