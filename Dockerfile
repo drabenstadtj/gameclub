@@ -19,4 +19,4 @@ COPY . .
 
 
 # Run both Flask (via Gunicorn) and the bot
-CMD ["python bot.py"]
+CMD ["python", "bot.py"]
