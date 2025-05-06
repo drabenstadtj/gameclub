@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import datetime
 
-DB_NAME = '../db/gameclub.db'
+DB_NAME = './db/gameclub.db'
 
 def init_db():
     with sqlite3.connect(DB_NAME) as conn:
