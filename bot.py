@@ -65,7 +65,7 @@ async def help_command(ctx):
     embed.set_footer(text="Made by Jack")
 
     await ctx.send(embed=embed)
-
+    
 @bot.command(name="suggest")
 async def suggest(ctx, *, game_or_link: str):
     """Suggest a game by name or IGDB link."""
@@ -79,10 +79,10 @@ async def suggest(ctx, *, game_or_link: str):
         results = await fetch_igdb_results(query_value)
 
         if not results:
+            # Prompt user for manual entry if nothing found
             class ConfirmAdd(discord.ui.View):
                 def __init__(self):
                     super().__init__(timeout=30)
-                    self.value = None
 
                 @discord.ui.button(label="Yes", style=discord.ButtonStyle.success)
                 async def yes(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -91,7 +91,6 @@ async def suggest(ctx, *, game_or_link: str):
                         return
                     db.add_suggestion(ctx.author.name, query_value, "Unknown", "Unknown", "No summary available.", "https://www.igdb.com")
                     await interaction.response.edit_message(content=f"✅ **{query_value}** has been added to your suggestions (manual entry).", view=None)
-                    self.value = True
 
                 @discord.ui.button(label="No", style=discord.ButtonStyle.danger)
                 async def no(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -99,7 +98,6 @@ async def suggest(ctx, *, game_or_link: str):
                         await interaction.response.send_message("❌ You can't respond for someone else.", ephemeral=True)
                         return
                     await interaction.response.edit_message(content="❌ Cancelled manual addition.", view=None)
-                    self.value = False
 
             view = ConfirmAdd()
             await ctx.send(
@@ -108,8 +106,8 @@ async def suggest(ctx, *, game_or_link: str):
             )
             return
 
-        else:
-            # Direct link
+        if query_type == "slug":
+            # IGDB link → Use first match directly
             game = results[0]
             name = game.get("name", "Unknown")
             summary = game.get("summary", "No summary available.")
@@ -124,6 +122,33 @@ async def suggest(ctx, *, game_or_link: str):
 
             db.add_suggestion(ctx.author.name, name, genres, release_date, summary, url)
             await ctx.send(f"✅ **{name}** has been added to your suggestions!")
+
+        else:
+            # Show dropdown options
+            options = build_game_options(results)
+
+            class GameSelect(discord.ui.Select):
+                def __init__(self):
+                    super().__init__(placeholder="Pick the correct game!", options=options)
+
+                async def callback(self, interaction: discord.Interaction):
+                    await handle_game_selection(interaction, self.values[0], results, ctx)
+
+            class CancelButton(discord.ui.Button):
+                def __init__(self):
+                    super().__init__(label="Cancel", style=discord.ButtonStyle.danger)
+
+                async def callback(self, interaction: discord.Interaction):
+                    if interaction.user.id != ctx.author.id:
+                        await interaction.response.send_message("You can't cancel someone else's suggestion.", ephemeral=True)
+                        return
+                    await interaction.response.edit_message(content="❌ Cancelled suggestion.", view=None)
+
+            view = discord.ui.View()
+            view.add_item(GameSelect())
+            view.add_item(CancelButton())
+
+            await ctx.send("🎯 Please pick the correct game:", view=view)
 
     except ValueError as ve:
         await ctx.send(f"⚠️ {ve}")
